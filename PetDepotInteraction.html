@@ -1,0 +1,96 @@
+<!Doctype html>
+<html>
+    <head>
+        <title>Vue.js Pet Depot</title>
+        <!--Load Vue.js from server---->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    </head>
+    <body>
+        <!--The element where Vue will mount-->
+        <div id="App">
+            <header>
+                <h1 v-text="sitename"></h1>
+                <button v-on:click="showCheckout">
+                    <!--cartitemCount is used the same way as a data property-->
+                    {{cartItemCount}}
+                    <!--add the cart icon-->
+                    <span class="fa-solid fa-cart-plus"></span> Checkout
+                </button>
+            </header>
+
+            <main>
+                <div v-if="showProduct">
+                    <figure>
+                        <!--bind 'src' to 'product.image' in 'data'-->
+                        <img v-bind:src="product.image">
+                    </figure>
+
+                    <h2 v-text="product.title"></h2>
+                    <p v-html="product.description"></p>
+                    <!--The double curly braces is put instead of v-text-->
+                    <p>price: {{product.price}}</p>
+                    <p>Available stock: {{product.availableInventory }}</p>
+                    <!--this button will be displayed when 'canAddToCart' is true-->
+                    <button v-on:click="addToCart" v-if="canAddToCart">
+                         Add to Cart
+                    </button>
+
+                    <!--this button will diplayed otherwise-->
+                    <button disabled='disabled' v-else> Add to Cart </button>
+                </div>
+
+                <div v-else>
+                    <h2>Checkout</h2>
+                </div>
+
+            </main>
+        </div>
+
+        <script type="text/javascript">
+            let webstore = new Vue({ // The Vue instance
+                    el: '#App', //The 'option object'. Dom and also dnt forget this comma
+                    
+                    data:{// the 'data' option
+                          // the key 'sitename' matches the value of 'v-text' earlier
+                        sitename: 'Vue.js Pet Depot',
+                        product:{
+                        id: 1001,
+                        title: "Cat Food, 25lb bag",
+                        description: "A 25 pound bag of <em>irresistible</em>,"+"organic goodness for your cat.",
+                        price: 2000,
+                        image: "Images/Product01img.jpeg",
+                        availableInventory: 5,
+                         } ,
+
+                        showProduct: true,
+                        cart:[]//array to store items in shopping cart
+                    },
+
+                    methods:{
+                        addToCart: function(){
+                            this.cart.push(this.product.id);
+                            this.product.availableInventory -= 1;
+                        },
+                        showCheckout(){
+                            this.showProduct = this.showProduct ? false: true;
+                        },
+                    
+                    },
+
+                    computed:{//the computed property object
+                        cartItemCount:function(){// the propoerty name 
+                                        // its value is calculated when it is called
+                                        return this.cart.length ||"";
+                        },
+
+                        canAddToCart: function(){
+                            return this.product.availableInventory > 0;
+                        }
+
+                    }
+                 
+            });
+        </script>
+    </body>
+</html>
